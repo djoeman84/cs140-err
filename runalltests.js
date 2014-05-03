@@ -15,6 +15,27 @@ var passRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/pass');
 var failRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/fail');
 
 
+function run () {
+  check_branch_name();
+}
+
+
+function check_branch_name () {
+  var child = exec('cd ~/CS140/pintos && git status', 
+    function (error, stdout, stderr) {
+      var branch_name = stdout.match(/On branch ([a-zA-Z0-9_\-]+)/)[1];
+
+      // stats 
+      statsRef.child('branchName')
+        .set(branch_name);
+
+      console.log('branch name checked');
+
+      make();
+    }
+  );
+}
+
 function make () {
 
   var child = exec('cd ~/CS140/pintos/src/userprog && make clean && make', 
@@ -84,11 +105,12 @@ function make_check () {
 
       console.log('make_check complete');
       setTimeout(function () {
-        make();
+        run();
       }, timeout);
     }
   );
 
 }
 
-make();
+
+run();

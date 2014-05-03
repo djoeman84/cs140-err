@@ -51,6 +51,10 @@
       <h1>Debug CS140</h1>
       <p>Run "node runalltests.js"</p>
       <p>Running on branch '{{ stats.branchName }}'</p>
+      <button type="button" class="btn btn-primary" ng-click="showLog =! showLog">Show .git Logs</button>
+      <div ng-show="showLog">
+        <p ng-repeat="logline in stats.gitLog track by $index">{{logline}}</p>
+      </div>
     </div>
       
       <div class="row">

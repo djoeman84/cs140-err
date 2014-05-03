@@ -81,7 +81,7 @@ function make_check () {
         if (line.match(/^FAIL/))  {
           failRef.push(line);
           failNum++;
-        } else if (line.match(/^PASS/)) {
+        } else if (line.match(/^pass/)) {
           passRef.push(line);
           passNum++;
         }

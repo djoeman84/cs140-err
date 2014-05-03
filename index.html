@@ -22,6 +22,7 @@
     var makeCheckErrRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/err');
     var passRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/pass');
     var failRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/fail');
+    var statsRef = new Firebase('https://cs140-2014.firebaseio.com/stats');
 
     $scope.makeSuccess = $firebase(makeOutRef);
     $scope.makeFail = $firebase(makeErrRef);
@@ -30,9 +31,7 @@
     $scope.pass = $firebase(passRef);
     $scope.fail = $firebase(failRef);
 
-    $scope.len = function (obj) {
-      return Object.keys(obj).length;
-    }
+    $scope.stats = $firebase(statsRef);
 
 
   };
@@ -56,8 +55,8 @@
       <div class="row" ng-controller="AlertsController">
         <div class="col-md-4">
           <h3>Make</h3>
-          <h5>out: {{ len(makeSuccess) }}</h5>
-          <h5>err: {{ len(makeFail) }}</h5>
+          <h5>out: {{ stats.makeOut }}</h5>
+          <h5>err: {{ stats.makeErr }}</h5>
 
           <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeFail">
             <button type="button" class="close" data-dismiss="alert">×</button>
@@ -73,8 +72,8 @@
 
         <div class="col-md-4">
           <h3>Make Check</h3>
-          <h5>out: {{ len(makeCheckSuccess) }}</h5>
-          <h5>err: {{ len(makeCheckFail) }}</h5>
+          <h5>out: {{ stats.makeCheckOut }}</h5>
+          <h5>err: {{ stats.makeCheckErr }}</h5>
 
           <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeCheckFail">
             <button type="button" class="close" data-dismiss="alert">×</button>
@@ -90,8 +89,8 @@
 
         <div class="col-md-4">
           <h3>Tets</h3>
-          <h5>passing: {{ len(pass) }}</h5>
-          <h5>failing: {{ len(fail) }}</h5>
+          <h5>passing: {{ stats.pass }}</h5>
+          <h5>failing: {{ stats.fail }}</h5>
 
           <div class="alert alert-dismissable alert-danger" ng-repeat="alert in fail">
             <button type="button" class="close" data-dismiss="alert">×</button>

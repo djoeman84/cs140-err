@@ -37,7 +37,7 @@
   };
   </script>
 </head>
-<body ng-app="debugApp">
+<body ng-app="debugApp" ng-controller="AlertsController">
 
 
   
@@ -50,9 +50,10 @@
     <div class="page-header">
       <h1>Debug CS140</h1>
       <p>Run "node runalltests.js"</p>
+      <p>Running on branch '{{ stats.branchName }}'</p>
     </div>
       
-      <div class="row" ng-controller="AlertsController">
+      <div class="row">
         <div class="col-md-4">
           <h3>Make</h3>
           <h5>out: {{ stats.makeOut }}</h5>

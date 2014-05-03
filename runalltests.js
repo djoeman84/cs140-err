@@ -31,10 +31,25 @@ function check_branch_name () {
 
       console.log('branch name checked');
 
-      make();
+      upload_git_log();
     }
   );
 }
+
+function upload_git_log () {
+  var child = exec('cd ~/CS140/pintos && git log', 
+    function (error, stdout, stderr) {
+
+      // stats 
+      statsRef.child('gitLog')
+        .set(stdout.split('\n'));
+
+      console.log('branch log uploaded');
+
+      make();
+    }
+  );
+};
 
 function make () {
 
@@ -64,6 +79,8 @@ function make () {
 
 function make_check () {  
 
+  var passed_failed = {};
+
   var child = exec('cd ~/CS140/pintos/src/userprog/build && make check', 
     function (error, stdout, stderr) {
 
@@ -79,11 +96,17 @@ function make_check () {
       for (var i = 0; i < stdout_split.length; i++) {
         var line = stdout_split[i];
         if (line.match(/^FAIL/))  {
-          failRef.push(line);
-          failNum++;
+          if (!(line in passed_failed)) {
+            failRef.push(line);
+            failNum++;
+            passed_failed[line] = true;
+          }
         } else if (line.match(/^pass/)) {
-          passRef.push(line);
-          passNum++;
+          if (!(line in passed_failed)) {
+            passRef.push(line);
+            passNum++;
+            passed_failed[line] = true;
+          }
         }
       };
       makeCheckOutRef.set(stdout_split);

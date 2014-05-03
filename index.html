@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Debug</title>
+  <link rel="stylesheet" href="http://bootswatch.com/yeti/bootstrap.min.css">
+  <!-- Firebase -->
+  <script src="https://cdn.firebase.com/js/client/1.0.11/firebase.js"></script>
+  <!-- AngularJS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+  <!-- AngularFire Library -->
+  <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+
+  <script>
+  var debugApp = angular.module('debugApp', ['firebase']);
+
+  function AlertsController($scope, $firebase) {
+    var makeOutRef = new Firebase('https://cs140-2014.firebaseio.com/make/out');
+    var makeErrRef = new Firebase('https://cs140-2014.firebaseio.com/make/err');
+    var makeCheckOutRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/out');
+    var makeCheckErrRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/err');
+    var passRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/pass');
+    var failRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/fail');
+
+    $scope.makeSuccess = $firebase(makeOutRef);
+    $scope.makeFail = $firebase(makeErrRef);
+    $scope.makeCheckSuccess = $firebase(makeCheckOutRef);
+    $scope.makeCheckFail = $firebase(makeCheckErrRef);
+    $scope.pass = $firebase(passRef);
+    $scope.fail = $firebase(failRef);
+
+    $scope.len = function (obj) {
+      return Object.keys(obj).length;
+    }
+
+
+  };
+  </script>
+</head>
+<body ng-app="debugApp">
+
+
+  
+  
+
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+
+    <div class="page-header">
+      <h1>Debug CS140</h1>
+      <p>Run "node runalltests.js"</p>
+    </div>
+      
+      <div class="row" ng-controller="AlertsController">
+        <div class="col-md-4">
+          <h3>Make</h3>
+          <h5>out: {{ len(makeSuccess) }}</h5>
+          <h5>err: {{ len(makeFail) }}</h5>
+
+          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeFail">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Error: </strong> {{ alert }}.
+          </div>
+
+          <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeSuccess">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Ok! </strong> {{ alert }}.
+          </div>
+
+        </div>
+
+        <div class="col-md-4">
+          <h3>Make Check</h3>
+          <h5>out: {{ len(makeCheckSuccess) }}</h5>
+          <h5>err: {{ len(makeCheckFail) }}</h5>
+
+          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeCheckFail">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Error: </strong> {{ alert }}.
+          </div>
+
+          <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeCheckSuccess">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Ok! </strong> {{ alert }}.
+          </div>
+
+        </div>
+
+        <div class="col-md-4">
+          <h3>Tets</h3>
+          <h5>passing: {{ len(pass) }}</h5>
+          <h5>failing: {{ len(fail) }}</h5>
+
+          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in fail">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Error: </strong> {{ alert }}.
+          </div>
+
+          <div class="alert alert-dismissable alert-success" ng-repeat="alert in pass">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <strong>Ok! </strong> {{ alert }}.
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+  
+
+
+
+</body>
+</html>

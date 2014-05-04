@@ -75,6 +75,8 @@
         </div>
       </div>
     </div>
+
+    <input type="text" name="" value="" ng-model="query" placeholder="Query">
       
       <div class="row">
         <div class="col-md-4">
@@ -83,14 +85,14 @@
           <h5>err: {{ stats.makeErr }}</h5>
           <h5>time: {{ stats.makeTime | date:'mediumTime' }}</h5>
 
-          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeFail">
+          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeFail | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Error: </strong> {{ alert }}.
+            {{ alert }}.
           </div>
 
-          <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeSuccess">
+          <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeSuccess | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Ok! </strong> {{ alert }}.
+            {{ alert }}.
           </div>
 
         </div>
@@ -101,14 +103,14 @@
           <h5>err: {{ stats.makeCheckErr }}</h5>
           <h5>time: {{ stats.makeCheckTime | date:'mediumTime' }}</h5>
 
-          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeCheckFail">
+          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeCheckFail | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Error: </strong> {{ alert }}.
+            {{ alert }}.
           </div>
 
-          <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeCheckSuccess">
+          <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeCheckSuccess | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Ok! </strong> {{ alert }}.
+            {{ alert }}.
           </div>
 
         </div>
@@ -119,14 +121,14 @@
           <h5>failing: {{ stats.fail }}</h5>
           <h5>time: {{ stats.makeCheckTime | date:'mediumTime' }}</h5>
 
-          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in fail">
+          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in fail | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Error: </strong> {{ alert }}.
+            {{ alert }}.
           </div>
 
-          <div class="alert alert-dismissable alert-success" ng-repeat="alert in pass">
+          <div class="alert alert-dismissable alert-success" ng-repeat="alert in pass | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            <strong>Ok! </strong> {{ alert }}.
+            {{ alert }}.
           </div>
 
         </div>

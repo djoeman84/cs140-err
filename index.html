@@ -61,6 +61,7 @@
       <h1>Debug CS140</h1>
       <p>Run "node runalltests.js"</p>
       <p>Running on branch '{{ stats.branchName }}'</p>
+      <p>Updated file '{{ stats.fileUpdated.filename }}' at {{ stats.fileUpdated.time | date:'mediumTime' }}</p>
       <button type="button" class="btn btn-primary" ng-click="showLog =! showLog">{{showLog ? 'Hide':'Show'}} .git Logs</button>
       <br>
       <br>

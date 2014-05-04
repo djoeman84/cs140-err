@@ -5,12 +5,22 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Debug</title>
   <link rel="stylesheet" href="http://bootswatch.com/yeti/bootstrap.min.css">
+  <link rel="stylesheet" href="https://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css">
+  <link rel="stylesheet" href="http://getbootstrap.com/assets/css/docs.min.css">
+  <style type="text/css">
+    #gitlog {
+      max-height: 400px;
+      overflow: scroll;
+    }
+  </style>
   <!-- Firebase -->
   <script src="https://cdn.firebase.com/js/client/1.0.11/firebase.js"></script>
   <!-- AngularJS -->
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
   <!-- AngularFire Library -->
   <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+  <!-- prettify -->
+  <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js" type="text/javascript" charset="utf-8"></script>
 
   <script>
   var debugApp = angular.module('debugApp', ['firebase']);
@@ -51,9 +61,17 @@
       <h1>Debug CS140</h1>
       <p>Run "node runalltests.js"</p>
       <p>Running on branch '{{ stats.branchName }}'</p>
-      <button type="button" class="btn btn-primary" ng-click="showLog =! showLog">Show .git Logs</button>
+      <button type="button" class="btn btn-primary" ng-click="showLog =! showLog">{{showLog ? 'Hide':'Show'}} .git Logs</button>
+      <br>
+      <br>
       <div ng-show="showLog">
-        <p ng-repeat="logline in stats.gitLog track by $index">{{logline}}</p>
+        <div class="highlight" id="gitlog">
+          <pre>
+            <code class="git">
+              <p ng-repeat="logline in stats.gitLog track by $index">{{logline}}</p>
+            </code>
+          </pre>
+        </div>
       </div>
     </div>
       

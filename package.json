@@ -1,0 +1,26 @@
+{
+  "name": "pintos",
+  "version": "1.0.0",
+  "description": "CS140 Pintos Project",
+  "main": "runalltests.js",
+  "dependencies": {
+    "firebase": "~1.0.14",
+    "node-watch": "~0.3.4",
+    "event-stream": "~3.1.5",
+    "argparse": "~0.1.15",
+    "sjcl": "~1.0.1"
+  },
+  "devDependencies": {
+    "event-stream": "~3.1.5"
+  },
+  "scripts": {
+    "test": "node runalltests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/djoeman84/pintos.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "gitHead": "281933fdf4960b5f1b511b743a2e60e91f0b7c19",
+  "readmeFil

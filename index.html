@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Debug</title>
-  <link rel="stylesheet" href="http://bootswatch.com/yeti/bootstrap.min.css">
-  <link rel="stylesheet" href="https://google-code-prettify.googlecode.com/svn/trunk/src/prettify.css">
-  <link rel="stylesheet" href="http://getbootstrap.com/assets/css/docs.min.css">
+  <link rel="stylesheet" href="//bootswatch.com/yeti/bootstrap.min.css">
+  <link rel="stylesheet" href="//getbootstrap.com/assets/css/docs.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
   <style type="text/css">
     #gitlog {
       max-height: 400px;
@@ -16,6 +16,27 @@
     .pointable {
       cursor: pointer;
     }
+    html {min-height: 100%;}
+
+    body { padding-top: 70px; min-height: 1500px;}
+
+
+    @media screen and (max-width: 767px){
+        body.nav-in {
+          padding-top: 209px;
+        }
+    }
+
+    #no-login-cover {
+      position: absolute;
+      top: 0;
+      left:0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0,0,0,0.8);
+      display: block;
+    }
+    
   </style>
   <!-- Firebase -->
   <script src="https://cdn.firebase.com/js/client/1.0.11/firebase.js"></script>
@@ -23,52 +44,140 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
   <!-- AngularFire Library -->
   <script src="https://cdn.firebase.com/libs/angularfire/0.7.1/angularfire.min.js"></script>
+  <!-- Angular Simple Login -->
+  <script type="text/javascript" src="https://cdn.firebase.com/js/simple-login/1.4.1/firebase-simple-login.js"></script>
   <!-- prettify -->
   <script src="http://google-code-prettify.googlecode.com/svn/trunk/src/prettify.js" type="text/javascript" charset="utf-8"></script>
+  <!-- sjcl -->
+  <script src="http://bitwiseshiftleft.github.io/sjcl/sjcl.js" type="text/javascript" charset="utf-8" async defer></script>
+
+
 
   <script>
   var debugApp = angular.module('debugApp', ['firebase']);
 
   function AlertsController($scope, $firebase, $location, $anchorScroll) {
+    var userRef;
+
     var fburl = 'https://cs140-2014.firebaseio.com/';
-    var makeOutRef = new Firebase(fburl + 'make/out');
-    var makeErrRef = new Firebase(fburl + 'make/err');
-    var makeCheckErrRef = new Firebase(fburl+'make_check/err');
-    var testRef = new Firebase(fburl + 'tests');
-    var statsRef = new Firebase(fburl + 'stats');
+    var appRef = new Firebase(fburl);
 
-    $scope.makeSuccess = $firebase(makeOutRef);
-    $scope.makeErr = $firebase(makeErrRef);
-    $scope.makeCheckErr = $firebase(makeCheckErrRef);
-    $scope.tests = $firebase(testRef);
+    var makeOutRef;
+    var makeErrRef;
+    var makeCheckErrRef;
+    var testRef;
+    var statsRef;
 
-    $scope.stats = $firebase(statsRef);
+    var auth = new FirebaseSimpleLogin(appRef, function(error, user) {
+      if (user) {
+        $scope.isLoggedIn = true;
+
+        userRef = new Firebase(fburl+'/user/'+user.uid);
+        userRef.once('value', function (snap) {
+          var refID = snap.val();
+          if (refID === null) {
+            refID = makeid(256);
+            userRef.set(refID);
+          }
+
+          // I realize this isn't safe, its merely so people don't see it over shoulders when the user copies
+          $scope.key = encodeURIComponent(sjcl.encrypt("Zaxozva73K3F6rkt8UeOPtMXSXTtKyxDkycBWCpjRtNV2MbvIhAzdREmfczLfp7", refID)).replace(/%/g,'=');
+
+          userDataRef = appRef.child('data').child(refID);
+
+          $scope.makeSuccess  = $firebase(userDataRef.child('make').child('out'));
+          $scope.makeErr      = $firebase(userDataRef.child('make').child('err'));
+          $scope.makeCheckErr = $firebase(userDataRef.child('make_check').child('err'));
+          $scope.tests        = $firebase(userDataRef.child('tests'));
+          $scope.stats        = $firebase(userDataRef.child('stats'));
+
+        });
+      }
+    });
+
 
     $scope.toSection = function (hash) {
       $location.hash(hash);
       $anchorScroll();
     };
 
+    $scope.login = function (service) {
+      auth.login(service);
+    };
+
+    $scope.logout = function () {
+      auth.logout();
+      $scope.isLoggedIn = false;
+      window.location.reload();
+    };
+
 
   };
+
+  function makeid(len)
+  {
+      var text = '';
+      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+      // 62^len entropy
+      for( var i=0; i < len; i++ )
+          text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+      return text;
+  }
   </script>
 </head>
-<body ng-app="debugApp" ng-controller="AlertsController">
+<body ng-app="debugApp" ng-controller="AlertsController" ng-class="{'nav-in':navNotCollapsed}">
 
 
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" ng-class="{collapsed:!navNotCollapsed}" ng-click="navNotCollapsed =! navNotCollapsed">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">CS140</a>
+      </div>
+      <div class="navbar-collapse navbar-inverse-collapse" ng-class="{collapse:!navNotCollapsed, in:navNotCollapsed}">
+        <ul class="nav navbar-nav">
+          <li class=""><a href="https://github.com/djoeman84/cs140-err"><i class="fa fa-github-square fa-lg"></i> fork us!</a></li>
+        </ul>
+        <form class="navbar-form navbar-left">
+          <input type="text" class="form-control col-lg-8" name="" value="" ng-model="query" placeholder="Query">
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="javascript:undefined;" title="" ng-click="logout()" ng-show="isLoggedIn">logout</a></li>
+          <li class="dropdown" ng-class="{open:showDropdown}">
+            <a href="#" class="dropdown-toggle" ng-click="showDropdown =! showDropdown">login <b class="caret"></b></a>
+            <ul class="dropdown-menu" ng-show="showDropdown">
+              <li><a href="javascript:undefined;" ng-click="login('facebook')"><i class="fa fa-facebook"></i>  facebook</a></li>
+              <li><a href="javascript:undefined;" ng-click="login('github')"><i class="fa fa-github"></i>  github</a></li>
+              <li><a href="javascript:undefined;" ng-click="login('twitter')"><i class="fa fa-twitter"></i>  twitter</a></li>
+              <li><a href="javascript:undefined;" ng-click="login('google')"><i class="fa fa-google-plus"></i>  google</a></li>
+              <li><a href="javascript:undefined;" ng-click="login('anonymous')"><i class="fa fa-eye-slash"></i>  anonymous</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+  </div>
+
+  <div id="no-login-cover" ng-hide="isLoggedIn">
+    
+  </div>
   
-  
-
-  <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-
+  <!-- Content -->
+  <div class="container">
     <div class="page-header">
       <h1>Debug CS140</h1>
       <p>Run "node runalltests.js -h"</p>
       <p>Running on branch '{{ stats.branchName }}'</p>
       <p>Updated file '{{ stats.fileUpdated.filename }}' at {{ stats.fileUpdated.time | date:'mediumTime' }}</p>
       <button type="button" class="btn btn-primary" ng-click="showLog =! showLog">{{showLog ? 'Hide':'Show'}} .git Logs</button>
+      <button type="button" class="btn btn-default" ng-click="showKey =! showKey">{{showKey ? 'Hide':'Show'}} secret key</button>
       <br>
       <br>
       <div ng-show="showLog">
@@ -80,9 +189,15 @@
           </pre>
         </div>
       </div>
+      <div ng-show="showKey">
+        <div class="highlight" id="gitlog">
+          <pre>
+            <code class="git" ng-bind="key" id="secret-key">
+            </code>
+          </pre>
+        </div>
+      </div>
     </div>
-
-    <input type="text" name="" value="" ng-model="query" placeholder="Query">
 
     <h5>passing: {{ stats.pass }}</h5>
     <h5>failing: {{ stats.fail }}</h5>
@@ -129,12 +244,6 @@
 
       </div>
 
-    </div>
-    <div class="col-md-1"></div>
   </div>
-  
-
-
-
 </body>
 </html>

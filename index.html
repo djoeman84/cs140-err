@@ -12,6 +12,10 @@
       max-height: 400px;
       overflow: scroll;
     }
+
+    .pointable {
+      cursor: pointer;
+    }
   </style>
   <!-- Firebase -->
   <script src="https://cdn.firebase.com/js/client/1.0.11/firebase.js"></script>
@@ -25,21 +29,22 @@
   <script>
   var debugApp = angular.module('debugApp', ['firebase']);
 
-  function AlertsController($scope, $firebase) {
+  function AlertsController($scope, $firebase, $location, $anchorScroll) {
     var makeOutRef = new Firebase('https://cs140-2014.firebaseio.com/make/out');
     var makeErrRef = new Firebase('https://cs140-2014.firebaseio.com/make/err');
-    var makeCheckOutRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/out');
-    var makeCheckErrRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/err');
     var testRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/tests');
     var statsRef = new Firebase('https://cs140-2014.firebaseio.com/stats');
 
     $scope.makeSuccess = $firebase(makeOutRef);
     $scope.makeFail = $firebase(makeErrRef);
-    $scope.makeCheckSuccess = $firebase(makeCheckOutRef);
-    $scope.makeCheckFail = $firebase(makeCheckErrRef);
     $scope.tests = $firebase(testRef);
 
     $scope.stats = $firebase(statsRef);
+
+    $scope.toSection = function (hash) {
+      $location.hash(hash);
+      $anchorScroll();
+    };
 
 
   };
@@ -78,48 +83,39 @@
 
     <h5>passing: {{ stats.pass }}</h5>
     <h5>failing: {{ stats.fail }}</h5>
-    <h5>time: {{ stats.makeCheckTime | date:'mediumTime' }}</h5>
     <div class="row">
       <div class="col-xs-12">
-        <span class="label" ng-class="{'label-danger':!alert.passed,'label-success':(alert.passed)}" style="float: left;" ng-repeat="alert in tests | orderByPriority | filter:query">{{ alert.test }}</span>
+        <span class="label" ng-class="{'label-danger':!test.passed,'label-success':(test.passed)}" style="float: left;" ng-repeat="(key,test) in tests | orderByPriority | filter:query"><span class="pointable" ng-bind="test.name" ng-click="toSection('test-'+key)"></span></span>
       </div>
     </div>
       
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-3">
           <h3>Make</h3>
           <h5>out: {{ stats.makeOut }}</h5>
           <h5>err: {{ stats.makeErr }}</h5>
-          <h5>time: {{ stats.makeTime | date:'mediumTime' }}</h5>
+          <h5>last completed: {{ stats.makeTime | date:'mediumTime' }}</h5>
 
           <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeFail | orderByPriority | filter:query">
-            <button type="button" class="close" data-dismiss="alert">×</button>
             {{ alert }}
           </div>
 
           <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeSuccess | orderByPriority | filter:query">
-            <button type="button" class="close" data-dismiss="alert">×</button>
             {{ alert }}
           </div>
 
         </div>
 
-        <div class="col-md-6">
-          <h3>Make Check</h3>
+        <div class="col-md-9">
+          <h3>Tests</h3>
           <h5>out: {{ stats.makeCheckOut }}</h5>
           <h5>err: {{ stats.makeCheckErr }}</h5>
-          <h5>time: {{ stats.makeCheckTime | date:'mediumTime' }}</h5>
+          <h5>last completed: {{ stats.makeCheckTime | date:'mediumTime' }}</h5>
 
-          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeCheckFail | orderByPriority | filter:query">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            {{ alert }}
+          <div class="alert alert-dismissable" ng-class="{'alert-danger':!test.passed,'alert-success':(test.passed)}" ng-repeat="(key, test) in tests | orderByPriority | filter:query" id="test-{{ key }}">
+            <h3>{{ test.name }}</h3>
+            <p ng-repeat="line in test.lines"> {{ line }} </p>
           </div>
-
-          <div class="alert alert-dismissable alert-success" ng-repeat="(key, alert) in makeCheckSuccess">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            {{ alert }}
-          </div>
-
         </div>
 
       </div>

@@ -153,7 +153,7 @@
           <li><a href="javascript:undefined;" title="" ng-click="logout()" ng-show="isLoggedIn">logout</a></li>
           <li class="dropdown" ng-class="{open:showDropdown}">
             <a href="#" class="dropdown-toggle" ng-click="showDropdown =! showDropdown" ng-hide="isLoggedIn">login <b class="caret"></b></a>
-            <ul class="dropdown-menu" ng-show="showDropdown">
+            <ul class="dropdown-menu" ng-show="showDropdown" ng-hide="isLoggedIn">
               <li><a href="javascript:undefined;" ng-click="login('facebook')"><i class="fa fa-facebook"></i>  facebook</a></li>
               <li><a href="javascript:undefined;" ng-click="login('github')"><i class="fa fa-github"></i>  github</a></li>
               <li><a href="javascript:undefined;" ng-click="login('twitter')"><i class="fa fa-twitter"></i>  twitter</a></li>

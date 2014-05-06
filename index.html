@@ -30,13 +30,16 @@
   var debugApp = angular.module('debugApp', ['firebase']);
 
   function AlertsController($scope, $firebase, $location, $anchorScroll) {
-    var makeOutRef = new Firebase('https://cs140-2014.firebaseio.com/make/out');
-    var makeErrRef = new Firebase('https://cs140-2014.firebaseio.com/make/err');
-    var testRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/tests');
-    var statsRef = new Firebase('https://cs140-2014.firebaseio.com/stats');
+    var fburl = 'https://cs140-2014.firebaseio.com/';
+    var makeOutRef = new Firebase(fburl + 'make/out');
+    var makeErrRef = new Firebase(fburl + 'make/err');
+    var makeCheckErrRef = new Firebase(fburl+'make_check/err');
+    var testRef = new Firebase(fburl + 'tests');
+    var statsRef = new Firebase(fburl + 'stats');
 
     $scope.makeSuccess = $firebase(makeOutRef);
-    $scope.makeFail = $firebase(makeErrRef);
+    $scope.makeErr = $firebase(makeErrRef);
+    $scope.makeCheckErr = $firebase(makeCheckErrRef);
     $scope.tests = $firebase(testRef);
 
     $scope.stats = $firebase(statsRef);
@@ -62,7 +65,7 @@
 
     <div class="page-header">
       <h1>Debug CS140</h1>
-      <p>Run "node runalltests.js"</p>
+      <p>Run "node runalltests.js -h"</p>
       <p>Running on branch '{{ stats.branchName }}'</p>
       <p>Updated file '{{ stats.fileUpdated.filename }}' at {{ stats.fileUpdated.time | date:'mediumTime' }}</p>
       <button type="button" class="btn btn-primary" ng-click="showLog =! showLog">{{showLog ? 'Hide':'Show'}} .git Logs</button>
@@ -96,7 +99,7 @@
           <h5>err: {{ stats.makeErr }}</h5>
           <h5>last completed: {{ stats.makeTime | date:'mediumTime' }}</h5>
 
-          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeFail | orderByPriority | filter:query">
+          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeErr | orderByPriority | filter:query">
             {{ alert }}
           </div>
 
@@ -104,12 +107,18 @@
             {{ alert }}
           </div>
 
+          <h3>Make Check Errors</h3>
+          <h5>err: {{ stats.makeCheckErr }}</h5>
+          <h5>last completed: {{ stats.makeTime | date:'mediumTime' }}</h5>
+          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeCheckErr | orderByPriority | filter:query">
+            {{ alert }}
+          </div>
+
         </div>
+
 
         <div class="col-md-9">
           <h3>Tests</h3>
-          <h5>out: {{ stats.makeCheckOut }}</h5>
-          <h5>err: {{ stats.makeCheckErr }}</h5>
           <h5>last completed: {{ stats.makeCheckTime | date:'mediumTime' }}</h5>
 
           <div class="alert alert-dismissable" ng-class="{'alert-danger':!test.passed,'alert-success':(test.passed)}" ng-repeat="(key, test) in tests | orderByPriority | filter:query" id="test-{{ key }}">

@@ -1,0 +1,11 @@
+{
+  "watchDir":"./src",
+  "recursive":true,
+  "symLinks":false,
+  "filterBy":"(\\.c|\\.h)$",
+  "firebaseUrl": "https://cs140-2014.firebaseio.com/",
+  "makeDir":"src/userprog",
+  "buildDir":"src/userprog/build",
+  "testCall":"pintos -v -k .*",
+  "dataRef":"H9irzTnoRrD6M2Up0DYcAtm35398MWQzIXSD9fZThID0QBPJSyYXW67XTm3XboXE9WLEoQlRcrb542riyX56sQ5P2Q4abAFqVB7vIbqmhfQ1hxIlMzr1kBTIynSk6e6aGhaRYY4RZdOHnhLdWtQsrv9udc4MeV31Ofhppwvm4EudR2wi8RhECCBcxqON1YojIAPXDLZG7Xfw2yTIf8iQe05FW7nlPbqJFVynvm5Pb5fbPZC7sVzU5WDQypXqELz4"
+}

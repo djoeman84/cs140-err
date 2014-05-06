@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Debug</title>
   <link rel="stylesheet" href="//bootswatch.com/yeti/bootstrap.min.css">
   <link rel="stylesheet" href="//getbootstrap.com/assets/css/docs.min.css">
@@ -80,8 +81,7 @@
             userRef.set(refID);
           }
 
-          // I realize this isn't safe, its merely so people don't see it over shoulders when the user copies
-          $scope.key = encodeURIComponent(sjcl.encrypt("Zaxozva73K3F6rkt8UeOPtMXSXTtKyxDkycBWCpjRtNV2MbvIhAzdREmfczLfp7", refID)).replace(/%/g,'=');
+          $scope.key = refID;
 
           userDataRef = appRef.child('data').child(refID);
 
@@ -150,7 +150,7 @@
         <ul class="nav navbar-nav navbar-right">
           <li><a href="javascript:undefined;" title="" ng-click="logout()" ng-show="isLoggedIn">logout</a></li>
           <li class="dropdown" ng-class="{open:showDropdown}">
-            <a href="#" class="dropdown-toggle" ng-click="showDropdown =! showDropdown">login <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" ng-click="showDropdown =! showDropdown" ng-hide="isLoggedIn">login <b class="caret"></b></a>
             <ul class="dropdown-menu" ng-show="showDropdown">
               <li><a href="javascript:undefined;" ng-click="login('facebook')"><i class="fa fa-facebook"></i>  facebook</a></li>
               <li><a href="javascript:undefined;" ng-click="login('github')"><i class="fa fa-github"></i>  github</a></li>

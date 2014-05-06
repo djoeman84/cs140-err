@@ -30,16 +30,14 @@
     var makeErrRef = new Firebase('https://cs140-2014.firebaseio.com/make/err');
     var makeCheckOutRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/out');
     var makeCheckErrRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/err');
-    var passRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/pass');
-    var failRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/fail');
+    var testRef = new Firebase('https://cs140-2014.firebaseio.com/make_check/tests');
     var statsRef = new Firebase('https://cs140-2014.firebaseio.com/stats');
 
     $scope.makeSuccess = $firebase(makeOutRef);
     $scope.makeFail = $firebase(makeErrRef);
     $scope.makeCheckSuccess = $firebase(makeCheckOutRef);
     $scope.makeCheckFail = $firebase(makeCheckErrRef);
-    $scope.pass = $firebase(passRef);
-    $scope.fail = $firebase(failRef);
+    $scope.tests = $firebase(testRef);
 
     $scope.stats = $firebase(statsRef);
 
@@ -77,9 +75,18 @@
     </div>
 
     <input type="text" name="" value="" ng-model="query" placeholder="Query">
+
+    <h5>passing: {{ stats.pass }}</h5>
+    <h5>failing: {{ stats.fail }}</h5>
+    <h5>time: {{ stats.makeCheckTime | date:'mediumTime' }}</h5>
+    <div class="row">
+      <div class="col-xs-12">
+        <span class="label" ng-class="{'label-danger':!alert.passed,'label-success':(alert.passed)}" style="float: left;" ng-repeat="alert in tests | orderByPriority | filter:query">{{ alert.test }}</span>
+      </div>
+    </div>
       
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
           <h3>Make</h3>
           <h5>out: {{ stats.makeOut }}</h5>
           <h5>err: {{ stats.makeErr }}</h5>
@@ -87,17 +94,17 @@
 
           <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeFail | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            {{ alert }}.
+            {{ alert }}
           </div>
 
           <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeSuccess | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            {{ alert }}.
+            {{ alert }}
           </div>
 
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
           <h3>Make Check</h3>
           <h5>out: {{ stats.makeCheckOut }}</h5>
           <h5>err: {{ stats.makeCheckErr }}</h5>
@@ -105,30 +112,12 @@
 
           <div class="alert alert-dismissable alert-danger" ng-repeat="alert in makeCheckFail | orderByPriority | filter:query">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            {{ alert }}.
+            {{ alert }}
           </div>
 
-          <div class="alert alert-dismissable alert-success" ng-repeat="alert in makeCheckSuccess">
+          <div class="alert alert-dismissable alert-success" ng-repeat="(key, alert) in makeCheckSuccess">
             <button type="button" class="close" data-dismiss="alert">×</button>
-            {{ alert }}.
-          </div>
-
-        </div>
-
-        <div class="col-md-4">
-          <h3>Tests</h3>
-          <h5>passing: {{ stats.pass }}</h5>
-          <h5>failing: {{ stats.fail }}</h5>
-          <h5>time: {{ stats.makeCheckTime | date:'mediumTime' }}</h5>
-
-          <div class="alert alert-dismissable alert-danger" ng-repeat="alert in fail | orderByPriority | filter:query">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            {{ alert }}.
-          </div>
-
-          <div class="alert alert-dismissable alert-success" ng-repeat="alert in pass | orderByPriority | filter:query">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            {{ alert }}.
+            {{ alert }}
           </div>
 
         </div>

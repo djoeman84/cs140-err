@@ -113,6 +113,13 @@
       window.location.reload();
     };
 
+    $scope.newKeyGen = function () {
+      if (userRef) {
+        refID = makeid(256);
+        userRef.set(refID);
+      }
+      window.location.reload();
+    };
 
   };
 
@@ -180,6 +187,7 @@
       <p>Updated file '{{ stats.fileUpdated.filename }}' at {{ stats.fileUpdated.time | date:'mediumTime' }}</p>
       <button type="button" class="btn btn-primary" ng-click="showLog =! showLog">{{showLog ? 'Hide':'Show'}} .git Logs</button>
       <button type="button" class="btn btn-default" ng-click="showKey =! showKey">{{showKey ? 'Hide':'Show'}} secret key</button>
+      <button type="button" class="btn btn-default" ng-click="newKeyGen()"><i class="fa fa-refresh"></i> New key</button>
       <br>
       <br>
       <div ng-show="showLog">

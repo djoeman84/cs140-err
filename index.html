@@ -121,6 +121,15 @@
       window.location.reload();
     };
 
+    $scope.editKey = function () {
+      if ($scope.toKey && userRef) {
+        if (userRef) {
+          userRef.set($scope.toKey);
+        }
+        window.location.reload();
+      }
+    };
+
   };
 
   function makeid(len)
@@ -188,6 +197,7 @@
       <button type="button" class="btn btn-primary" ng-click="showLog =! showLog">{{showLog ? 'Hide':'Show'}} .git Logs</button>
       <button type="button" class="btn btn-default" ng-click="showKey =! showKey">{{showKey ? 'Hide':'Show'}} secret key</button>
       <button type="button" class="btn btn-default" ng-click="newKeyGen()"><i class="fa fa-refresh"></i> New key</button>
+      <button type="button" class="btn btn-default" ng-click="showEditKey =! showEditKey"><i class="fa fa-edit"></i> Set Key</button>
       <br>
       <br>
       <div ng-show="showLog">
@@ -207,6 +217,15 @@
           </pre>
         </div>
       </div>
+      <div ng-show="showEditKey">
+        <div class="input-group">
+         <input type="text" class="form-control" ng-model="toKey">
+         <span class="input-group-btn">
+           <button class="btn btn-default" type="button" ng-click="editKey()">Save</button>
+         </span>
+       </div><!-- /input-group -->
+      </div>
+
     </div>
 
     <h5>passing: {{ stats.pass }}</h5>
